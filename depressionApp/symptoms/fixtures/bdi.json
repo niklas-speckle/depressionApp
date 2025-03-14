@@ -1,0 +1,55 @@
+
+[
+    {
+        "model": "symptoms.questionnaire",
+        "pk": 1,
+        "fields": {
+            "name": "Single Depression Item",
+            "description": "Depression Screening"
+        }
+    }, 
+    {
+        "model": "symptoms.question",
+        "pk": 1,
+        "fields": {
+            "question": "I feel depressed",
+            "questionnaire": 1
+        }
+    },
+    {
+        "model": "symptoms.responseoption",
+        "pk": 1,
+        "fields": {
+            "text": "not at all",
+            "value": 0,
+            "question": 1
+        }
+    },
+    {
+        "model": "symptoms.responseoption",
+        "pk": 2,
+        "fields": {
+            "text": "a little",
+            "value": 1,
+            "question": 1
+        }
+    },
+    {
+        "model": "symptoms.responseoption",
+        "pk": 3,
+        "fields": {
+            "text": "a lot",
+            "value": 2,
+            "question": 1
+        }
+    },
+    {
+        "model": "symptoms.responseoption",
+        "pk": 4,
+        "fields": {
+            "text": "very much",
+            "value": 3,
+            "question": 1
+        }
+    }
+]
