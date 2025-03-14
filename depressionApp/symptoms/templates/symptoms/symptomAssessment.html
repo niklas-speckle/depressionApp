@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Questionnaire
+{% endblock %}
+
+{% block content %}
+    <h1>Questionnaire</h1>
+    {% csrf_token %}
+
+    <form method="post">
+        {% csrf_token %}
+        {% for form in form_list %}
+            <div class="form-with-validation">
+                {{ form.as_p }}
+            </div>
+        {% endfor %}
+        <button type="submit">Submit</button>
+    </form>
+
+    
+{% endblock %} 

@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import User
+
 # Create your models here.
 
 class Questionnaire(models.Model):
@@ -32,6 +34,7 @@ class UserResponse(models.Model):
     questionnaire = models.ForeignKey(Questionnaire, on_delete=models.CASCADE)
     responses = models.ManyToManyField(ResponseOption)
     date = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
 
     def __str__(self):
-        return "{Questionnaire: " + self.questionnaire.name + ", Date: " + self.date + "}"
+        return "{Questionnaire: " + self.questionnaire.name + ", Date: " + str(self.date) + ", " + str(self.user) + "}"
