@@ -3,14 +3,40 @@ from .models import Questionnaire, Question, UserResponse
 from .view_models.questionnaire import QuestionResponseForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.http import JsonResponse
 
 # Create your views here.
 
 @login_required(login_url="/users/login")
 def dashboard(request):
-    current_user = request.user
-    assessments = UserResponse.objects.filter(user = current_user)
-    return render(request, 'symptoms/dashboard.html', {'assessments': assessments})
+    questionnaires = Questionnaire.objects.all()
+    return render(request, 'symptoms/dashboard.html', {'questionnaires': questionnaires})
+
+@login_required(login_url="/users/login")
+def get_questionnaire_scores(request):
+
+    if request.method == "GET":
+        questionnaire_id = request.GET.get("questionnaire_id")
+
+        current_user = request.user
+        questionnaire = Questionnaire.objects.get(id = questionnaire_id)
+
+        if questionnaire:
+
+            responses = UserResponse.objects.filter(questionnaire = questionnaire, user = current_user)
+
+            data = [response.get_score() for response in responses.all()]
+            #labels = [response.date.strftime("%d/%m") for response in responses.all()]
+            labels = [i for i in range(0, len(data))]
+
+            print("Sent data:")
+            print(data)
+            return JsonResponse({'data': data, 'labels':labels})
+    
+    
+    return JsonResponse({"error": "Invalid request"}, status=400)
+
+
 
 
 """choose questionnaire for symptom assessment"""

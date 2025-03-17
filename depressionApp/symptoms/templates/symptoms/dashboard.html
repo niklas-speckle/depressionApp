@@ -5,21 +5,61 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Symptoms</h1>
+    <h1>Symptom History</h1>
+    
+    <h3>Select a Questionnaire</h3>
+    <select id="questionnaireDropdown">
+        <option value="">Select Questionnaire</option>
+        {% for questionnaire in questionnaires %}
+            <option value="{{ questionnaire.id }}">{{ questionnaire.name }}</option>
+        {% endfor %}
+    </select>
 
-    {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+    
+    <div>
+        <canvas id="questionnaireChart" height="100"></canvas>
+    </div>
 
-    {% for assessment in assessments %}
-        <p>{{assessment.questionnaire}}</p>
-        <p>{{assessment.get_score}}</p>
-        
-        <p>{{assessments.date}}</p>
-    {% endfor %}
+    <script>
+        $(document).ready(function () {
+            let ctx = document.getElementById("questionnaireChart").getContext("2d");
+            let chart;
+
+            $("#questionnaireDropdown").change(function () {
+                let questionnaireId = $(this).val();
+
+                if (questionnaireId) {
+                    $.ajax({
+                        url: "{% url 'symptoms:questionnaire_scores' %}",
+                        data: { questionnaire_id: questionnaireId },
+                        dataType: "json",
+                        success: function (response) {
+                            if (response.data) {
+                                let labels = response.labels
+                                let values = response.data;
+
+                                if (chart) {
+                                    chart.destroy();  // Destroy old chart before creating a new one
+                                }
+
+                                chart = new Chart(ctx, {
+                                    type: "line",
+                                    data: {
+                                        labels: labels,
+                                        datasets: [{
+                                            label: "Symptom Score",
+                                            data: values,
+                                            borderColor: "blue",
+                                            fill: false
+                                        }]
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 
 {% endblock %} 
