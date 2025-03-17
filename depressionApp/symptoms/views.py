@@ -2,15 +2,30 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Questionnaire, Question, UserResponse
 from .view_models.questionnaire import QuestionResponseForm
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 # Create your views here.
 
+@login_required(login_url="/users/login")
 def dashboard(request):
-    return render(request, 'symptoms/dashboard.html')
+    current_user = request.user
+    assessments = UserResponse.objects.filter(user = current_user)
+    return render(request, 'symptoms/dashboard.html', {'assessments': assessments})
+
+
+"""choose questionnaire for symptom assessment"""
+@login_required(login_url="/user/login")
+def questionnaireSelection_view(request):
+
+    questionnaires = Questionnaire.objects.all()
+
+    return render(request, 'symptoms/questionnaireSelection.html', {"questionnaires": questionnaires})
+
 
 @login_required(login_url="/users/login")
-def symptomAssessment_view(request):
-    questionnaire = get_object_or_404(Questionnaire, id=1)
+def symptomAssessment_view(request, questionnaire_id):
+
+    questionnaire = get_object_or_404(Questionnaire, id=questionnaire_id)
     questions = questionnaire.questions.all()
     form_list = [QuestionResponseForm(question) for question in questions]
 
@@ -28,6 +43,7 @@ def symptomAssessment_view(request):
 
             UserResponse.save(user_response)
 
+        messages.success(request, "Questionnaire submitted.")
 
         return redirect("symptoms:dashboard")
     

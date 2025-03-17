@@ -1,9 +1,25 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Symptoms
+    Dashboard
 {% endblock %}
 
 {% block content %}
     <h1>Symptoms</h1>
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% for assessment in assessments %}
+        <p>{{assessment.questionnaire}}</p>
+        <p>{{assessment.get_score}}</p>
+        
+        <p>{{assessments.date}}</p>
+    {% endfor %}
+
 {% endblock %} 

@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 
 class Questionnaire(models.Model):
     """Represents a symptom assessment questionnaire."""
-    name = models.CharField(max_length=15)
+    name = models.CharField(max_length=35)
     description = models.TextField()
 
     def __str__(self):
@@ -38,3 +38,10 @@ class UserResponse(models.Model):
 
     def __str__(self):
         return "{Questionnaire: " + self.questionnaire.name + ", Date: " + str(self.date) + ", " + str(self.user) + "}"
+    
+    def get_score(self):
+        score = 0
+        for response in self.responses.all():
+            score += response.value
+        return score
+

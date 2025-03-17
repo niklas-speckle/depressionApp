@@ -5,5 +5,7 @@ app_name = 'symptoms'
 
 urlpatterns = [
     path('', views.dashboard, name = "dashboard"),
-    path('symptomAssessment/', views.symptomAssessment_view, name="symptomAssessment")
+    path('symptomAssessment/<int:questionnaire_id>', views.symptomAssessment_view, name="symptomAssessment"),
+    path('questionnaireSelection/', views.questionnaireSelection_view, name="questionnaireSelection"),
+
 ]

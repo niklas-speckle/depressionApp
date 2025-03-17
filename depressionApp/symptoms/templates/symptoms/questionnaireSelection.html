@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Choose Questionnaire
+{% endblock %}
+
+{% block content %}
+    <h1>Choose Questionnaire</h1>
+
+    {% csrf_token %}
+
+    {% for questionnaire in questionnaires %}
+        <a href="{% url 'symptoms:symptomAssessment' questionnaire_id=questionnaire.id %}"><p>{{questionnaire.name}}</p></a>
+    {% endfor %}
+
+{% endblock %} 
