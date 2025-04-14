@@ -8,4 +8,5 @@ urlpatterns = [
     path('symptomAssessment/<int:questionnaire_id>', views.symptomAssessment_view, name="symptomAssessment"),
     path('questionnaireSelection/', views.questionnaireSelection_view, name="questionnaireSelection"),
     path('questionnaire_scores/', views.get_questionnaire_scores, name="questionnaire_scores"),
+    path('patients/', views.dashboard, name="patients"),
 ]

@@ -1,16 +1,31 @@
+
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Questionnaire, Question, UserResponse
 from .view_models.questionnaire import QuestionResponseForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
+from users.models import HealthProfessionalProfile, PatientProfile
 
 # Create your views here.
 
 @login_required(login_url="/users/login")
 def dashboard(request):
-    questionnaires = Questionnaire.objects.all()
-    return render(request, 'symptoms/dashboard.html', {'questionnaires': questionnaires})
+
+    current_user = request.user
+
+    if current_user.groups.filter(name="Patient").exists():
+        questionnaires = Questionnaire.objects.all()
+        return render(request, 'symptoms/dashboard.html', {'questionnaires': questionnaires})
+    
+    elif current_user.groups.filter(name="Health-Professional").exists():
+        health_professional_profile_current_user = HealthProfessionalProfile.objects.get(user = current_user)
+        patients = PatientProfile.objects.filter(health_professional = health_professional_profile_current_user)
+
+        print(patients)
+
+        return render(request, 'symptoms/patients.html', {"patients":patients})
+
 
 @login_required(login_url="/users/login")
 def get_questionnaire_scores(request):
