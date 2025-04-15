@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
 from users.models import HealthProfessionalProfile, PatientProfile
+from django.http import HttpResponseForbidden
+from users.permissionService import is_allowed_to_read
 
 # Create your views here.
 
@@ -15,38 +17,48 @@ def dashboard(request):
     current_user = request.user
 
     if current_user.groups.filter(name="Patient").exists():
-        questionnaires = Questionnaire.objects.all()
-        return render(request, 'symptoms/dashboard.html', {'questionnaires': questionnaires})
+        patient_profile_current_user = PatientProfile.objects.get(user = current_user)
+        return user_responses_view(request, patient_profile_current_user)
+        # questionnaires = Questionnaire.objects.all()
+        # return render(request, 'symptoms/dashboard.html', {'questionnaires': questionnaires})
     
-    elif current_user.groups.filter(name="Health-Professional").exists():
+    if current_user.groups.filter(name="Health-Professional").exists():
+        request.GET
         health_professional_profile_current_user = HealthProfessionalProfile.objects.get(user = current_user)
-        patients = PatientProfile.objects.filter(health_professional = health_professional_profile_current_user)
+        patient_profiles = PatientProfile.objects.filter(health_professional = health_professional_profile_current_user)
+        return render(request, 'symptoms/patients.html', {"patient_profiles":patient_profiles})
 
-        print(patients)
+@login_required(login_url="/users/login")
+def user_responses_view(request, slug):
+    """View to display the responses of a single user."""
+    requested_user_profile = get_object_or_404(PatientProfile, slug=slug)
+    current_user = request.user
+    questionnaires = Questionnaire.objects.all()
 
-        return render(request, 'symptoms/patients.html', {"patients":patients})
+    if is_allowed_to_read(current_user, requested_user_profile):
+        return render(request, 'symptoms/user_responses.html', {'requested_user_profile':requested_user_profile, 'questionnaires': questionnaires})
+    else:
+        return HttpResponseForbidden("You do not have permission to view this user's responses.")
+    
 
 
 @login_required(login_url="/users/login")
-def get_questionnaire_scores(request):
+def get_questionnaire_scores(request, profile_slug):
 
-    if request.method == "GET":
-        questionnaire_id = request.GET.get("questionnaire_id")
+    print("get_questionnaire_scores")
+    """View to get the scores of a questionnaire for a specific user."""
+    requested_user_profile = get_object_or_404(PatientProfile, slug=profile_slug)
+    current_user = request.user
+    questionnaire_id = request.GET.get("questionnaire_id")
+    questionnaire = Questionnaire.objects.get(id = questionnaire_id)
 
-        current_user = request.user
-        questionnaire = Questionnaire.objects.get(id = questionnaire_id)
+    if is_allowed_to_read(current_user, requested_user_profile):
+        responses = UserResponse.objects.filter(questionnaire = questionnaire, user = requested_user_profile.user)
 
-        if questionnaire:
+        data = [response.get_score() for response in responses.all()]
+        labels = [i for i in range(0, len(data))]
 
-            responses = UserResponse.objects.filter(questionnaire = questionnaire, user = current_user)
-
-            data = [response.get_score() for response in responses.all()]
-            #labels = [response.date.strftime("%d/%m") for response in responses.all()]
-            labels = [i for i in range(0, len(data))]
-
-            print("Sent data:")
-            print(data)
-            return JsonResponse({'data': data, 'labels':labels})
+        return JsonResponse({'data': data, 'labels':labels})
     
     
     return JsonResponse({"error": "Invalid request"}, status=400)

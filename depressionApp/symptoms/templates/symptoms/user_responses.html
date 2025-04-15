@@ -30,7 +30,7 @@
 
                 if (questionnaireId) {
                     $.ajax({
-                        url: "{% url 'symptoms:questionnaire_scores' %}",
+                        url: "{% url 'symptoms:questionnaire_scores' requested_user_profile.slug %}",
                         data: { questionnaire_id: questionnaireId },
                         dataType: "json",
                         success: function (response) {
