@@ -17,5 +17,31 @@ DepressionApp is an application designed to guide depressed patients through the
 - **Database:** SQLite
 
 ## Installation & Usage
-*(Instructions will be added later as development progresses.)*
+This project runs on ``Python 3.13.2``. Follow the steps below to get started.
 
+### Prerequisites:
+- ``Python 3.13.2`` installed on your system
+- ``Git`` (optional, if cloning the repo)
+
+Assuming you are in the root directory of this project, run the following commands in your terminal:
+```bash
+python -m venv testenv # Create and activate a virtual environment
+
+testenv\Scripts\activate  # On Windows
+# For macOS/Linux, use: source testenv/bin/activate
+
+pip install -r requirements.txt # Install dependencies
+
+cd depressionApp # Navigate to the Django app directory
+
+python manage.py runserver # Run the server
+```
+Once the server is running, open your browser and go to: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
+
+You can log in using any of the following test users:
+| Username   | Password   |
+|------------|------------|
+| `doc1`     | `123passwd` |
+| `doc2`     | `123passwd` |
+| `patient1` | `123passwd` |
+| `patient2` | `123passwd` |
