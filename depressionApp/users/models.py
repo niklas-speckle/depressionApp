@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
+from enum import Enum
 
 # Create your models here.
 class HealthProfessionalProfile(models.Model):
@@ -27,3 +28,17 @@ class PatientProfile(models.Model):
 class USER_TYPE(models.TextChoices):
     HEALTH_PROFESSIONAL = "Health Professional",
     PATIENT = "Patient"
+
+class TherapyAgreement(models.Model):
+    """Request of health-professional to add patient to his patients and consequently access patient data"""
+    class STATUS(models.TextChoices):
+        PENDING = "Pending"
+        ACCEPTED = "Accepted"
+        REJECTED = "Rejected"
+
+    health_professional = models.ForeignKey(HealthProfessionalProfile, on_delete=models.CASCADE, related_name="therapy_agreements")
+    patient = models.ForeignKey(PatientProfile, on_delete=models.CASCADE, related_name="therapy_agreements")
+    status = models.TextField(choices=STATUS.choices, default=STATUS.PENDING)
+
+    def __str__(self):
+        return f"{self.health_professional} - {self.patient}"

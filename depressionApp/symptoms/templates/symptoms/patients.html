@@ -11,4 +11,9 @@
         <a href="{% url 'symptoms:user_responses' patient_profile.slug %}">{{patient_profile.user.username}}</a>
     {% endfor %}
 
+    <br>
+    <a href="{% url 'users:create_therapy_agreement' %}">Invite Patient</a>
+
+    
+
 {% endblock %} 

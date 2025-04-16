@@ -12,3 +12,11 @@ def is_allowed_to_read(requester, target_patient_profile):
         return health_professional_profile in target_patient_profile.health_professional.all()
 
     return False
+
+def is_allowed_to_see_all_patients(requester):
+    """Check if the requester has permission to see all patients."""
+    # Check if the requester is a health professional
+    if requester.groups.filter(name="Health-Professional").exists():
+        return True
+
+    return False
