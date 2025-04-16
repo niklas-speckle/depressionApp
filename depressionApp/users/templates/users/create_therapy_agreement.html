@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Therapy Agreement
+{% endblock %}
+
+{% block content %}
+    <h1>Create Therapy Agreement</h1>
+    <form class="form-with-validation" action="{% url 'users:create_therapy_agreement' %}" method="post">
+        {% csrf_token %}
+        {{ form }}
+        <button class="form-submit">Invite Patient</button>
+    </form>
+{% endblock %} 
