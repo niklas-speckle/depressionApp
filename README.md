@@ -7,6 +7,7 @@ DepressionApp is an application designed to guide depressed patients through the
 - **Symptom Tracking:** Patients can log their symptoms over time to observe trends.
 - **Patient Dashboard:** Patients have access to a visual trajectory of their symptoms to better understand their mental health progress.
 - **Doctor Dashboard:** Doctors can view their patients’ symptom trajectories, allowing for more informed and data-driven assessments.
+- **Therapy Agreements:** Doctors must create and patients must accept a `TherapyAgreement` so that doctors can see a patient's symptoms. 
 
 ## Planned Features
 - **Treatment Adherence Tracking:** Tracks medication intake, therapy sessions, and exercises.
