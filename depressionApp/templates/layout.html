@@ -26,6 +26,8 @@
                 <form id="symptom-assessment" action="{% url 'symptoms:questionnaireSelection' %}" style="display: none;">
                     {% csrf_token %}
                 </form> |
+
+                <a href="{% url 'users:your_therapists' %}">Your Therapists</a> |
             {% endif %}
 
             <a href="#" onclick="document.getElementById('logout-form').submit();">Logout</a>

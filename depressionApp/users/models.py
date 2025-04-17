@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
-from enum import Enum
+from django.db import transaction
 
 # Create your models here.
 class HealthProfessionalProfile(models.Model):
@@ -38,7 +38,32 @@ class TherapyAgreement(models.Model):
 
     health_professional = models.ForeignKey(HealthProfessionalProfile, on_delete=models.CASCADE, related_name="therapy_agreements")
     patient = models.ForeignKey(PatientProfile, on_delete=models.CASCADE, related_name="therapy_agreements")
+
     status = models.TextField(choices=STATUS.choices, default=STATUS.PENDING)
+
+    @transaction.atomic
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            # Check if a similar agreement already exists
+            existing_agreement = TherapyAgreement.objects.filter(
+                health_professional=self.health_professional,
+                patient=self.patient
+            ).first()
+            if existing_agreement:
+                raise ValueError("A therapy agreement already exists between this health professional and patient.")
+        
+        # If status changed to ACCEPTED, add patient to health professional's patients
+        if self.status == self.STATUS.ACCEPTED:
+            self.health_professional.patients.add(self.patient)
+            self.health_professional.save()
+
+        # If status changed to REJECTED, remove the agreement
+        elif self.status == self.STATUS.REJECTED:
+            self.health_professional.patients.remove(self.patient)
+            self.health_professional.save()
+        
+        # Save the therapy agreement
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.health_professional} - {self.patient}"

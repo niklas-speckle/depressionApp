@@ -19,8 +19,6 @@ def dashboard(request):
     if current_user.groups.filter(name="Patient").exists():
         patient_profile_current_user = PatientProfile.objects.get(user = current_user)
         return user_responses_view(request, patient_profile_current_user)
-        # questionnaires = Questionnaire.objects.all()
-        # return render(request, 'symptoms/dashboard.html', {'questionnaires': questionnaires})
     
     if current_user.groups.filter(name="Health-Professional").exists():
         request.GET

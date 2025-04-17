@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Your Therapists
+{% endblock %}
+
+{% block content %}
+    
+    {% if therapy_agreements %}
+    <h1>Therapist Requests</h1>
+    <p>The following healthcare professionals are requesting to be their patient. Do you want to accept them? This means they can inspect your symptom history. </p>
+    <ul>
+        {% for therapy_agreement in therapy_agreements %}
+            <div id="therapy_agreement-{{therapy_agreement.id}}">
+                {{therapy_agreement.health_professional.user}}
+                <button onclick="setTherapyAgreementStatus({{therapy_agreement.id}}, 'Accepted')">Accept</button>
+                <button onclick="setTherapyAgreementStatus({{therapy_agreement.id}}, 'Rejected')">Reject</button>
+            </div>
+        {% endfor %}
+    {% endif %}
+    </ul>
+
+
+    <h1>Your Therapists</h1>
+    {% for therapist  in therapists %}
+        {{therapist.user.username}}<br>
+    {% endfor %}
+
+    <script>
+        function setTherapyAgreementStatus(therapyAgreementId, status) {
+            const url = "{% url 'users:set_therapy_agreement_status' therapy_agreement_id=0 %}".replace('0', therapyAgreementId);
+            console.log("Running javascript function to set therapy agreement status. url is: ", url);
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ status: status })
+            })
+            .then(response => {
+                if (response.ok) {
+                    document.getElementById(`therapy_agreement-${therapyAgreementId}`).remove();
+                } else {
+                    console.error('Error accepting therapy agreement:', response.statusText);
+                }
+            })
+        }
+    </script>
+
+{% endblock %} 
+

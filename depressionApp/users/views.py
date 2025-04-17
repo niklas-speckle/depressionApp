@@ -4,8 +4,10 @@ from .forms import RegisterUserForm, SearchPatientForm
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from .permissionService import is_allowed_to_see_all_patients
-from .models import PatientProfile, HealthProfessionalProfile
+from .models import PatientProfile, HealthProfessionalProfile, TherapyAgreement
 from django.http import HttpResponseForbidden, JsonResponse
+from django.views.decorators.http import require_POST
+import json
 
 
 # Create your views here.
@@ -62,3 +64,32 @@ def create_therapy_agreement(request):
         form = SearchPatientForm(request.GET or None)
         return render(request, "users/create_therapy_agreement.html", {"form": form})
     
+def your_therapists_view(request):
+    """View to display the therapists of a single user."""
+    current_user = request.user
+    if current_user.groups.filter(name="Patient").exists():
+        patient_profile_current_user = PatientProfile.objects.get(user = current_user)
+        therapy_agreements = TherapyAgreement.objects.filter(patient=patient_profile_current_user, status=TherapyAgreement.STATUS.PENDING)
+        therapists = patient_profile_current_user.health_professional.all()
+        return render(request, 'users/your_therapists.html', {'therapists': therapists, 'therapy_agreements': therapy_agreements})
+    else:
+        return HttpResponseForbidden("You do not have permission to view this user's responses.")
+
+@require_POST 
+def set_therapy_agreement_status(request, therapy_agreement_id):
+    new_status = json.loads(request.body).get("status")
+    print("#############################################################")
+    print(new_status)
+    print("#############################################################")
+
+    if new_status not in TherapyAgreement.STATUS.values:
+        return HttpResponseBadRequest("Invalid status")
+    
+    try:
+        therapy_agreement = TherapyAgreement.objects.get(id=therapy_agreement_id)
+        therapy_agreement.status = new_status
+        therapy_agreement.save()
+        return JsonResponse({"status": "success"})
+    except TherapyAgreement.DoesNotExist:
+        return JsonResponse({"status": "error", "message": "Therapy agreement not found"}, status=404)
+
