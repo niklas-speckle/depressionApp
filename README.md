@@ -1,5 +1,5 @@
 # DepressionApp
-
+> ⚠️ This project is at an early stage of development.
 ## Description
 DepressionApp is an application designed to guide depressed patients through their illness while assisting doctors in tracking symptoms and improving treatment strategies. The app aims to enhance the treatment process by providing symptom monitoring, treatment adherence tracking, and motivational support for patients.
 
