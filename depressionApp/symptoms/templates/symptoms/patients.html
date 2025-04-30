@@ -7,12 +7,14 @@
 {% block content %}
     <h1>Patients</h1>
 
-    {% for patient_profile in patient_profiles %}
-        <a href="{% url 'symptoms:user_responses' patient_profile.slug %}">{{patient_profile.user.username}}</a>
-    {% endfor %}
+    <ul class="patient_list">
+        {% for patient_profile in patient_profiles %}
+            <li class="patient_list_item"><a href="{% url 'symptoms:user_responses' patient_profile.slug %}">{{patient_profile.user.username}}</a></li>
+        {% endfor %}
+    </ul>
+        
 
-    <br>
-    <a href="{% url 'users:create_therapy_agreement' %}">Invite Patient</a>
+    <a href="{% url 'users:create_therapy_agreement' %}" class="button">Invite Patient</a>
 
     
 
