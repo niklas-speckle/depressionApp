@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
     <title>
         {% block title %}
 
@@ -14,17 +15,26 @@
         {% endblock %}
     </title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
     <nav class = "navbar">
-        <div class="nav-container">
+
+        <div class="top-nav-container">
             <a href="/">Home</a>
-            <ul class="nav-links">
+            <!-- show nav-items on click -->
+            <a href="javascript:void(0);" class="menu-icon" onclick="switchMenu()">
+                <i class="fa fa-bars"></i>
+            </a>
+        </div>           
+    
+
+        <div id="burger-menu-container" class="burger-menu-container">
+            <ul id="nav-items" class="nav-items">
                 {% if user.is_authenticated %}
                     <li><a href="{% url 'symptoms:dashboard' %}">Dashboard</a></li>
                     {% if user|has_group:"Patient" %}
                         <li><a href="#" onclick="document.getElementById('symptom-assessment').submit();">Symptom Assessment</a></li>
-                            
                         <li><a href="{% url 'users:your_therapists' %}">Your Therapists</a></li>
                     {% endif %}
                     <li><a href="#" onclick="document.getElementById('logout-form').submit();">Logout</a></li>
@@ -34,8 +44,8 @@
                 {% endif %}
             </ul>
         </div>
-            
 
+        
             
         <form id="logout-form" action="{% url 'users:logout' %}" method="post" style="display: none;">
             {% csrf_token %}
@@ -55,7 +65,18 @@
                 {% endfor %}
             </ul>
         {% endif %}
+
     {% endblock %}
 
+    <script>
+        function switchMenu() {
+            var x = document.getElementById("burger-menu-container");
+            if (x.style.display === "flex") {
+              x.style.display = "none";
+            } else {
+              x.style.display = "flex";
+            }
+          }
+    </script>
 </body>
 </html>
