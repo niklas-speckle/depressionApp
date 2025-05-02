@@ -96,7 +96,17 @@ body {
 
 }
 
+
 .registration-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  width: 300px;
+  padding: 0.1rem 0.1rem;
+}
+
+.form-textbox {
   width: 300px;
 }
 
@@ -106,7 +116,6 @@ body {
 }
 
 .submit-button {
-  margin: 1rem 0;
   background-color: #333;
   color: whitesmoke;
   border: solid;
@@ -115,6 +124,7 @@ body {
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
+  width: 300px;
 }
 .submit-button:hover {
   background-color: whitesmoke;
@@ -130,6 +140,8 @@ body {
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
+  width: 300px;
+  text-align: center;
 }
 
 .form-dropdown:hover {

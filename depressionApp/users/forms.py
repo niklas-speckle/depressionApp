@@ -25,7 +25,12 @@ class RegisterUserForm(UserCreationForm):
         profile.save()
         return new_user
 
-        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs.update({'class': 'form-textbox'})
+        self.fields['password1'].widget.attrs.update({'class': 'form-textbox'})
+        self.fields['password2'].widget.attrs.update({'class': 'form-textbox'})
+
     
     class Meta:
         model = User
