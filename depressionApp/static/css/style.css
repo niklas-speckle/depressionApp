@@ -66,7 +66,17 @@ body {
   border: 0%;
 }
 
+.content-wrapper {
+  width: 100%;
+  padding: 1rem 1.5rem;
+}
 
+@media screen and (min-width: 1950px) {
+  .content-wrapper {
+    width: 1950px;
+    margin: auto;
+  }
+}
 
 @media screen and (min-width: 2000px) {
 
@@ -83,3 +93,4 @@ body {
   }
 
 }
+
