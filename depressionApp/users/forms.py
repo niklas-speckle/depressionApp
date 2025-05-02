@@ -6,7 +6,7 @@ from django.db import transaction
 
 @transaction.atomic
 class RegisterUserForm(UserCreationForm):
-    user_type = forms.ChoiceField(choices=USER_TYPE, label="User Type", required=True)
+    user_type = forms.ChoiceField(choices=USER_TYPE, label="User Type", required=True, widget=forms.Select(attrs={'class': 'form-dropdown'}))
 
 
     def save(self):

@@ -6,9 +6,19 @@
 
 {% block content %}
     <h1>Register</h1>
-    <form class="form-with-validation" action="/users/register/" method="post">
+    <form class="form-with-validation registration-form" action="/users/register/" method="post">
         {% csrf_token %}
-        {{ form }}
-        <button class="form-submit">Submit</button>
+        {% for field in form  %}
+            
+        <div class="field-label-tag">{{field.label_tag}}</div>
+        <div class="text-field">{{field}}</div>
+            {% if field.errors %}
+                <div class="error">
+                    {{ field.errors }}
+                </div>
+            {% endif %}
+        {% endfor %}
+        
+        <button class="submit-button">Submit</button>
     </form>
 {% endblock %} 

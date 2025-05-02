@@ -96,3 +96,43 @@ body {
 
 }
 
+.registration-form {
+  width: 300px;
+}
+
+.field-label-tag {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.submit-button {
+  margin: 1rem 0;
+  background-color: #333;
+  color: whitesmoke;
+  border: solid;
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+.submit-button:hover {
+  background-color: whitesmoke;
+  color: #333;
+}
+
+.form-dropdown {
+  background-color: #333;
+  color: whitesmoke;
+  border: solid;
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.form-dropdown:hover {
+  background-color: whitesmoke;
+  color: #333;
+}
