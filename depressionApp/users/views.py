@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import AuthenticationForm
-from .forms import RegisterUserForm, SearchPatientForm
+from .forms import RegisterUserForm, TherapyAgreementRequestForm
+from django.core.exceptions import ValidationError
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from .permissionService import is_allowed_to_see_all_patients
@@ -8,6 +9,7 @@ from .models import PatientProfile, HealthProfessionalProfile, TherapyAgreement
 from django.http import HttpResponseForbidden, JsonResponse
 from django.views.decorators.http import require_POST
 import json
+from django.contrib import messages
 
 
 # Create your views here.
@@ -16,11 +18,15 @@ def register_view(request):
     # if user submits form, save the user to DB
     if request.method == "POST":
         form = RegisterUserForm(request.POST)
-        if form.is_valid:
+        if form.is_valid():
             login(request, form.save())
+            messages.success(request, "You have successfully registered.")
             return redirect("symptoms:dashboard")
+        else:
+            messages.error(request, "There was an error with your registration. Please try again.")
         
-    form = RegisterUserForm()
+    else:
+        form = RegisterUserForm()
     return render(request, "users/register.html", {"form": form})
 
 
@@ -29,17 +35,22 @@ def login_view(request):
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
             login(request, form.get_user())
+            messages.success(request, "You have successfully logged in.")
             if 'next' in request.POST:
                 return redirect(request.POST.get('next'))
             else:
                 return redirect("symptoms:dashboard")
-    form = AuthenticationForm()
+        else:
+            messages.error(request, "Invalid username or password. Please try again.")
+    else:
+        form = AuthenticationForm()
     return render(request, "users/login.html", {"form": form})
 
 
 def logout_view(request):
     if request.method == "POST":
         logout(request)
+        messages.success(request, "You have successfully logged out.") 
         return redirect("home")
     
 @login_required(login_url="users:login")
@@ -54,15 +65,19 @@ def get_patients_list(request):
 @login_required(login_url="users:login")
 def create_therapy_agreement(request):
     if request.method == "POST":
-        form = SearchPatientForm(data=request.POST)
+        form = TherapyAgreementRequestForm(data=request.POST)
         if form.is_valid():
-            health_professional_profile = HealthProfessionalProfile.objects.get(user=request.user)
-            therapy_agreement = form.save(health_professional_profile)
-            print(therapy_agreement)
-            return redirect("symptoms:dashboard")
-    else: 
-        form = SearchPatientForm(request.GET or None)
-        return render(request, "users/create_therapy_agreement.html", {"form": form})
+            try:
+                health_professional_profile = HealthProfessionalProfile.objects.get(user=request.user)
+                therapy_agreement = form.save(health_professional_profile)
+                messages.success(request, "Therapy request created successfully.")
+                return redirect("symptoms:dashboard")
+            except ValidationError as e:
+                messages.error(request, e.messages[0])
+        else:
+            messages.error(request, "There was an error creating the therapy request. Please try again.")
+    form = TherapyAgreementRequestForm(request.GET or None)
+    return render(request, "users/create_therapy_agreement.html", {"form": form})
     
 def your_therapists_view(request):
     """View to display the therapists of a single user."""
@@ -78,9 +93,6 @@ def your_therapists_view(request):
 @require_POST 
 def set_therapy_agreement_status(request, therapy_agreement_id):
     new_status = json.loads(request.body).get("status")
-    print("#############################################################")
-    print(new_status)
-    print("#############################################################")
 
     if new_status not in TherapyAgreement.STATUS.values:
         return HttpResponseBadRequest("Invalid status")
@@ -89,7 +101,9 @@ def set_therapy_agreement_status(request, therapy_agreement_id):
         therapy_agreement = TherapyAgreement.objects.get(id=therapy_agreement_id)
         therapy_agreement.status = new_status
         therapy_agreement.save()
+        messages.success(request, "Therapy agreement status updated successfully.")
         return JsonResponse({"status": "success"})
     except TherapyAgreement.DoesNotExist:
+        messages.error(request, "Therapy agreement not found.")
         return JsonResponse({"status": "error", "message": "Therapy agreement not found"}, status=404)
 

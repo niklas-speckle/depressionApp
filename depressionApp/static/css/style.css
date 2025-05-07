@@ -148,3 +148,33 @@ body {
   background-color: whitesmoke;
   color: #333;
 }
+
+.field-error {
+  color: red;
+  
+}
+
+.field-error ul {
+  list-style: none;
+}
+
+
+
+.messages {
+  list-style-type: none;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 0.5rem 0.5rem;
+}
+
+.success {
+  color: green;
+}
+
+.info {
+  color: blue;
+}
+
+.error {
+  color: red;
+}
