@@ -6,7 +6,7 @@
 
 {% block content %}
     <h1>Register</h1>
-    <form class="form-with-validation registration-form" action="/users/register/" method="post">
+    <form class="registration-form" action="/users/register/" method="post">
         {% csrf_token %}
         {{ form.non_field_errors }}
         {% for field in form  %}

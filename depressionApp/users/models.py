@@ -61,6 +61,8 @@ class TherapyAgreement(models.Model):
         elif self.status == self.STATUS.REJECTED:
             self.health_professional.patients.remove(self.patient)
             self.health_professional.save()
+            # delete therapy agreement
+            return self.delete()
         
         # Save the therapy agreement
         super().save(*args, **kwargs)

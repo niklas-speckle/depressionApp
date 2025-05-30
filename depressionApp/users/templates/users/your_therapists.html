@@ -12,9 +12,9 @@
     <ul>
         {% for therapy_agreement in therapy_agreements %}
             <div id="therapy_agreement-{{therapy_agreement.id}}">
-                {{therapy_agreement.health_professional.user}}
-                <button onclick="setTherapyAgreementStatus({{therapy_agreement.id}}, 'Accepted')">Accept</button>
-                <button onclick="setTherapyAgreementStatus({{therapy_agreement.id}}, 'Rejected')">Reject</button>
+                <span class="bold">{{therapy_agreement.health_professional.user}}</span> sent a request to be your therapist. Do you want to accept? <br>
+                <button class="submit-button" onclick="setTherapyAgreementStatus({{therapy_agreement.id}}, 'Accepted')">Accept</button>
+                <button class="submit-button" onclick="setTherapyAgreementStatus({{therapy_agreement.id}}, 'Rejected')">Reject</button>
             </div>
         {% endfor %}
     {% endif %}
@@ -23,7 +23,12 @@
 
     <h1>Your Therapists</h1>
     {% for therapist  in therapists %}
-        {{therapist.user.username}}<br>
+    <div>
+        <ul class="person-list">
+            <li>{{therapist.user.username}}</li>
+        </ul>
+    </div>
+        
     {% endfor %}
 
     <script>

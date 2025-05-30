@@ -47,7 +47,7 @@ class TherapyAgreementRequestForm(forms.Form):
 
         patient_profile = self.cleaned_data.get('patient_profile')
 
-        if TherapyAgreement.objects.filter(health_professional=health_professional_profile, patient=patient_profile).exists():
+        if TherapyAgreement.objects.filter(health_professional=health_professional_profile, patient=patient_profile, status="Pending").exists() | TherapyAgreement.objects.filter(health_professional=health_professional_profile, patient=patient_profile, status="Accepted").exists():
             raise forms.ValidationError("Therapy agreement already exists for this patient.")
 
         therapy_agreement = TherapyAgreement(
@@ -58,6 +58,11 @@ class TherapyAgreementRequestForm(forms.Form):
         therapy_agreement.save()
 
         return therapy_agreement
+    
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['patient_profile'].widget.attrs.update({'class': 'form-dropdown'})
 
 
         

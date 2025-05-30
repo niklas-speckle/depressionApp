@@ -71,6 +71,7 @@ body {
 .content-wrapper {
   width: 100%;
   padding: 1rem 1.5rem;
+  box-sizing: border-box;
 }
 
 @media screen and (min-width: 1950px) {
@@ -125,7 +126,9 @@ body {
   font-weight: 500;
   cursor: pointer;
   width: 300px;
+  text-decoration: none;
 }
+
 .submit-button:hover {
   background-color: whitesmoke;
   color: #333;
@@ -178,3 +181,62 @@ body {
 .error {
   color: red;
 }
+
+
+.questionnaire-list {
+  list-style: none;
+}
+
+.questionnaire-list li {
+  text-align: center;
+  width: 300px;
+  background-color: #333;
+  color: whitesmoke;
+  border: solid #333;
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.questionnaire-list li:hover {
+  background-color: whitesmoke;
+}
+
+.questionnaire-list li:hover a {
+  color: #333;
+  font-weight: bold;
+}
+
+.questionnaire-list a {
+  text-decoration: none;
+  color: whitesmoke;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+
+.person-list {
+  padding: 0.5rem 0.5rem;
+  list-style: none;
+}
+
+.link-list li {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.link-list li:hover a {
+  color: #333;
+  font-weight: bold;
+}
+
+.link-list a {
+  text-decoration: none;
+  color: #333;
+}
+
+
